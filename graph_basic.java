@@ -2,6 +2,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import javax.swing.DefaultDesktopManager;
+
 public class graph_basic{
     static class Edge{
         int src;
@@ -57,6 +59,7 @@ public class graph_basic{
             }
         }
     }
+    // Depth first search - O(V+E)
     public static void dfs(ArrayList<Edge> graph[],boolean vis[],int curr){
         if(vis[curr] == false){
             System.out.print(curr + " ");
@@ -66,6 +69,41 @@ public class graph_basic{
                 dfs(graph,vis,e.dest);
             }
         }
+    }
+    // Printing all paths in a graph from source to target(using modified dfs) - O(V^V)
+    public static void printAllPaths(ArrayList<Edge> graph[],boolean vis[],String path,int curr, int tar){
+        if(curr == tar){
+            System.out.println(path);
+            return;
+        }
+        for(int i=0;i<graph[curr].size();i++){
+            Edge e = graph[curr].get(i);
+            if(vis[e.dest] == false){
+                vis[curr] = true;
+                printAllPaths(graph, vis, path+"->"+e.dest, e.dest, tar);
+                vis[curr] =false;
+            }
+        }
+    }
+
+    // cycle detection in undirected graph
+    public static boolean detectCycle(ArrayList<Edge> graph[],boolean vis[],int curr,int parent){
+        vis[curr] = true;
+        for(int i=0;i<graph[curr].size();i++){
+            Edge e =graph[curr].get(i);
+            // 1st condition - cycle detection (if neighbour is visited by other node and also not it is parent)
+            if(!vis[e.dest] && parent!= e.dest){
+                return true;
+            }
+            //2nd condtion not needed -(if neighbour is visited by other node and also it is parent)
+            // 3rd condition - if not visited 
+            if(!vis[e.dest]){
+                if(detectCycle(graph, vis, e.dest, curr)){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
     public static void main(String[] args) {
         int V = 7;
@@ -81,7 +119,9 @@ public class graph_basic{
 
        // Depth first search
         boolean vis[] = new boolean[V];
-        dfs(graph, vis, 0);
+        //dfs(graph, vis, 0);
+        //printAllPaths(graph, vis, "0", 0, 5);
+        System.out.println(detectCycle(graph, vis, 0, -1));
         
     }
 }
