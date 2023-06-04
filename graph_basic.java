@@ -2,8 +2,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import javax.swing.DefaultDesktopManager;
-
 public class graph_basic{
     static class Edge{
         int src;
@@ -18,22 +16,35 @@ public class graph_basic{
         for(int i=0;i<graph.length;i++){
             graph[i] = new ArrayList<Edge>();
         }
-        graph[0].add(new Edge(0, 1));
+        //undirected graph
+        // graph[0].add(new Edge(0, 1));
+        // graph[0].add(new Edge(0, 2));
+        // graph[1].add(new Edge(1, 0));
+        // graph[1].add(new Edge(1, 3));
+        // graph[2].add(new Edge(2, 0));
+        // graph[2].add(new Edge(2, 4));
+        // graph[3].add(new Edge(3, 1));
+        // graph[3].add(new Edge(3, 4));
+        // graph[3].add(new Edge(3, 5));
+        // graph[4].add(new Edge(4, 2));
+        // graph[4].add(new Edge(4, 3));
+        // graph[4].add(new Edge(4, 5));
+        // graph[5].add(new Edge(5, 3));
+        // graph[5].add(new Edge(5, 6));
+        // graph[5].add(new Edge(5, 4));
+        // graph[6].add(new Edge(6, 5));
+
+        //Directed graph -cycle graph
+        // graph[0].add(new Edge(0, 2));
+        // graph[1].add(new Edge(1, 0));
+        // graph[2].add(new Edge(2, 3));
+        // graph[3].add(new Edge(3, 0));
+
+        // directed graph- non cyclic 
         graph[0].add(new Edge(0, 2));
-        graph[1].add(new Edge(1, 0));
+        graph[0].add(new Edge(0, 1));
         graph[1].add(new Edge(1, 3));
-        graph[2].add(new Edge(2, 0));
-        graph[2].add(new Edge(2, 4));
-        graph[3].add(new Edge(3, 1));
-        graph[3].add(new Edge(3, 4));
-        graph[3].add(new Edge(3, 5));
-        graph[4].add(new Edge(4, 2));
-        graph[4].add(new Edge(4, 3));
-        graph[4].add(new Edge(4, 5));
-        graph[5].add(new Edge(5, 3));
-        graph[5].add(new Edge(5, 6));
-        graph[5].add(new Edge(5, 4));
-        graph[6].add(new Edge(6, 5));
+        graph[2].add(new Edge(2, 3));
     }
     public static void printNeighbour(ArrayList<Edge> graph[],int vertex){
         for(int i=0;i<graph[vertex].size();i++){
@@ -105,8 +116,27 @@ public class graph_basic{
         }
         return false;
     }
+    //cycle detection in directed graph
+    public static boolean detectCycleDir(ArrayList<Edge> graph[],boolean vis[],int curr,boolean[] rec){
+        vis[curr] =true;
+        rec[curr] =true;
+        for(int i=0;i<graph[curr].size();i++){
+            Edge e = graph[curr].get(i);
+            if(rec[e.dest] == true){
+                return true;
+            }
+            else if(!vis[e.dest]){
+                return detectCycleDir(graph, vis, e.dest, rec);
+            }
+            
+        }
+        rec[curr] =false;
+        return false;
+        
+    }
     public static void main(String[] args) {
-        int V = 7;
+        //int V = 7;
+         int V = 4;
         ArrayList<Edge> graph[] = new ArrayList[V];
         // //Adding edges between vertices
         createGraph(graph);
@@ -121,7 +151,11 @@ public class graph_basic{
         boolean vis[] = new boolean[V];
         //dfs(graph, vis, 0);
         //printAllPaths(graph, vis, "0", 0, 5);
-        System.out.println(detectCycle(graph, vis, 0, -1));
+        //System.out.println(detectCycle(graph, vis, 0, -1));
+
+        // cycle detection for directed graph
+        boolean[] rec_stack = new boolean[V];
+        System.out.println(detectCycleDir(graph, vis, 0,rec_stack ));
         
     }
 }
