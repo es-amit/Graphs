@@ -43,6 +43,21 @@ public class BellmanFord {
                 }
             }
         }
+        // for detection of negative weight cycle
+        for(int k=0;k<1;k++){         
+            //O(E)
+            for(int i=0;i<V;i++){       
+                for(int j=0;j<graph[i].size();j++){
+                    Edge e = graph[i].get(j);
+                    int u = e.src;
+                    int v= e.dest;
+                    if(dist[u]+e.weight < dist[v] && dist[u]!= Integer.MAX_VALUE){
+                        System.out.println("Negative weight cycle");
+                        
+                    }
+                }
+            }
+        }
         for(int i=0;i<V;i++){
             System.out.print(dist[i]+" ");
         }
